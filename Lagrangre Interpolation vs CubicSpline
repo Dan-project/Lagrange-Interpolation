@@ -1,0 +1,59 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import CubicSpline
+from math import*
+
+plt.figure()
+
+#data:
+x1=[1978,1980,1982,1984,1986,1988,1990,1992] #year
+y1=[12.0,12.7,13.0,15.2,18.2,19.8,24.1,28.1] #toxin
+plt.scatter(x1,y1,label='Toxin concentration 1978-1992')
+
+
+# Implementing Lagrange Interpolation
+def Lagrange_Interpolation(xp,x,y):
+    n=len(x)
+    yp=0
+    for i in range(n):
+    
+        p = 1
+    
+        for j in range(n):
+            if i != j:
+                p = p * (xp - x[j])/(x[i] - x[j])
+    
+        yp = yp + p * y[i] 
+    return yp
+
+# plt.scatter(1994,Lagrange_Interpolation(1994,x1,y1),color='green', label='Prediction of lakes in 1994 with Lagrange interpolation')
+print(Lagrange_Interpolation(1994,x1,y1))
+
+xi = np.linspace(1978, 1992, 100)
+yi=[]
+for a in range(len(xi)):
+    yi.append(Lagrange_Interpolation(xi[a],x1,y1))
+plt.plot(xi,yi,color='red',label='Lagrange Interpolation')
+
+
+
+
+f = CubicSpline(x1, y1, bc_type='natural')
+y_new = f(xi)
+plt.plot(xi, y_new, 'orange',label='CubicSpline Interpolation')
+# plt.scatter(1994,f(1994),color='brown',label='Prediction of lakes in 1994 with CubicSpline interpolation')
+
+plt.legend()
+plt.xlabel('Years')
+plt.ylabel('Toxin Concentration')
+plt.show
+
+
+
+
+x2=[1978,1980,1986,1988,1990,1992] #year
+y2=[12.0,12.7,18.2,19.8,24.1,28.1] #toxin
+
+print(f'Lagrange Interpolation: 1982: {Lagrange_Interpolation(1982,x2,y2):.3f}   1984: {Lagrange_Interpolation(1984,x2,y2):.3f}')
+f2 = CubicSpline(x2, y2, bc_type='natural')
+print(f'CubicSpline Interpolation: 1982: {f2(1982):.3f}  1984: {f2(1984):.3f}')  
